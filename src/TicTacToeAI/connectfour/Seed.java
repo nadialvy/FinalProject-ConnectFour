@@ -6,8 +6,8 @@ import javax.swing.ImageIcon;
 
 public enum Seed { // to save as "Seed.java"
   // get the image hardcoded in the enum
-  CROSS("Snowy", "TicTacToeAI/images/cat1.gif"),
-  NOUGHT("Stormy", "TicTacToeAI/images/cat2.gif"),
+  SNOWY("Snowy", "TicTacToeAI/images/cat1.gif"),
+  STORMY("Stormy", "TicTacToeAI/images/cat2.gif"),
   NO_SEED(" ", null);
 
   // Private variables

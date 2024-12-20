@@ -8,12 +8,12 @@ import java.awt.*;
 public class Cell {
   // Define named constants for drawing
   public static final int SIZE = 120; // cell width/height (square)
-  // Symbols (cross/nought) are displayed inside a cell, with padding from border
+  // Symbols (SNOWY/STORMY) are displayed inside a cell, with padding from border
   public static final int PADDING = SIZE / 5;
   public static final int SEED_SIZE = SIZE - PADDING * 2;
 
   // Define properties (package-visible)
-  /** Content of this cell (Seed.EMPTY, Seed.CROSS, or Seed.NOUGHT) */
+  /** Content of this cell (Seed.EMPTY, Seed.SNOWY, or Seed.STORMY) */
   Seed content;
   /** Row and column of this cell */
   int row, col;
@@ -35,7 +35,7 @@ public class Cell {
     // Draw the Seed if it is not empty
     int x1 = col * SIZE + PADDING;
     int y1 = row * SIZE + PADDING;
-    if (content == Seed.CROSS || content == Seed.NOUGHT) {
+    if (content == Seed.SNOWY || content == Seed.STORMY) {
       g.drawImage(content.getImage(), x1, y1, SEED_SIZE, SEED_SIZE, null);
     }
   }

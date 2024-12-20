@@ -5,8 +5,8 @@ import java.net.URL;
 import javax.sound.sampled.*;
 
 public enum SoundEffect {
-  EAT_FOOD("TicTacToeAI/audio/jumpclick.wav"),
-  EXPLODE("TicTacToeAI/audio/selectclick.wav"),
+  SNOWY("TicTacToeAI/audio/jumpclick.wav"),
+  STORMY("TicTacToeAI/audio/selectclick.wav"),
   DIE("TicTacToeAI/audio/sad_trumpet.wav"),
   WIN("TicTacToeAI/audio/win.wav"),
   LOSE("TicTacToeAI/audio/lose.wav");

@@ -50,7 +50,7 @@ public class Board {
   /**
    * The given player makes a move on (selectedRow, selectedCol).
    * Update cells[selectedRow][selectedCol]. Compute and return the
-   * new game state (PLAYING, DRAW, CROSS_WON, NOUGHT_WON).
+   * new game state (PLAYING, DRAW, SNOWY_WON, STORMY_WON).
    */
   public State stepGame(Seed player, int selectedRow, int selectedCol) {
     // Update game board
@@ -71,7 +71,7 @@ public class Board {
             && cells[0][2].content == player
             && cells[1][1].content == player
             && cells[2][0].content == player) {
-      return (player == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
+      return (player == Seed.SNOWY) ? State.SNOWY_WON : State.STORMY_WON;
     } else {
       // Nobody win. Check for DRAW (all cells occupied) or PLAYING.
       for (int row = 0; row < ROWS; ++row) {

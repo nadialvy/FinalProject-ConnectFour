@@ -1,5 +1,5 @@
 package TicTacToeAI.connectfour;
 
 public enum State { // to save as "State.java"
-  PLAYING, DRAW, CROSS_WON, NOUGHT_WON
+  PLAYING, DRAW, SNOWY_WON, STORMY_WON
 }

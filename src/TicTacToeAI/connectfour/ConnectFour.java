@@ -10,9 +10,9 @@ public class ConnectFour extends JPanel {
   public static final String TITLE = "Connect Four";
   public static final Color COLOR_BG = Color.WHITE;
   public static final Color COLOR_BG_STATUS = new Color(216, 216, 216);
-  public static final Color COLOR_CROSS = new Color(239, 105, 80);
-  public static final Color COLOR_NOUGHT = new Color(64, 154, 225);
-  public static final Font FONT_STATUS = new Font("StormyCR A Extended", Font.PLAIN, 14);
+  public static final Color COLOR_SNOWY = new Color(239, 105, 80);
+  public static final Color COLOR_STORMY = new Color(64, 154, 225);
+  public static final Font FONT_STATUS = new Font("OCR A Extended", Font.PLAIN, 14);
 
   private Board board;
   private State currentState;
@@ -35,13 +35,18 @@ public class ConnectFour extends JPanel {
               if (board.cells[rowI][col].content == Seed.NO_SEED) {
                 board.cells[rowI][col].content = currentPlayer;
                 if (hasWon(currentPlayer, rowI, col)) {
-                  currentState = (currentPlayer == Seed.CROSS) ? State.CROSS_WON : State.NOUGHT_WON;
+                  currentState = (currentPlayer == Seed.SNOWY) ? State.SNOWY_WON : State.STORMY_WON;
                   showEndGameDialog(currentState);
                 } else if (isDraw()) {
                   currentState = State.DRAW;
                   showEndGameDialog(currentState);
                 } else {
-                  currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+                  currentPlayer = (currentPlayer == Seed.SNOWY) ? Seed.STORMY : Seed.SNOWY;
+                  if (currentPlayer == Seed.SNOWY) {
+                    SoundEffect.SNOWY.play();
+                  } else {
+                    SoundEffect.STORMY.play();
+                  }
                 }
                 break;
               }
@@ -82,7 +87,7 @@ public class ConnectFour extends JPanel {
         board.cells[row][col].content = Seed.NO_SEED;
       }
     }
-    currentPlayer = Seed.CROSS;
+    currentPlayer = Seed.SNOWY;
     currentState = State.PLAYING;
     statusBar.setText("Snowy's Turn");
   }
@@ -95,63 +100,37 @@ public class ConnectFour extends JPanel {
 
     if (currentState == State.PLAYING) {
       statusBar.setForeground(Color.BLACK);
-      statusBar.setText((currentPlayer == Seed.CROSS) ? "Snowy's Turn" : "Stormy's Turn");
-      if (currentPlayer == Seed.CROSS) {
-        SoundEffect.EXPLODE.play();
-      } else {
-        SoundEffect.EAT_FOOD.play();
-      }
+      statusBar.setText((currentPlayer == Seed.SNOWY) ? "Snowy's Turn" : "Stormy's Turn");
     } else if (currentState == State.DRAW) {
-      SoundEffect.DIE.play();
       statusBar.setForeground(Color.RED);
       statusBar.setText("It's a Draw! Click to play again.");
-    } else if (currentState == State.CROSS_WON) {
-      SoundEffect.EXPLODE.play();
+    } else if (currentState == State.SNOWY_WON) {
       statusBar.setForeground(Color.RED);
       statusBar.setText("Snowy Won! Click to play again.");
-    } else if (currentState == State.NOUGHT_WON) {
-      SoundEffect.EXPLODE.play();
+    } else if (currentState == State.STORMY_WON) {
       statusBar.setForeground(Color.RED);
       statusBar.setText("Stormy Won! Click to play again.");
     }
   }
 
   public boolean hasWon(Seed theSeed, int rowSelected, int colSelected) {
+    return checkDirection(theSeed, rowSelected, colSelected, 1, 0) || // Horizontal
+        checkDirection(theSeed, rowSelected, colSelected, 0, 1) || // Vertical
+        checkDirection(theSeed, rowSelected, colSelected, 1, 1) || // Diagonal (right-down)
+        checkDirection(theSeed, rowSelected, colSelected, 1, -1); // Diagonal (left-down)
+  }
+
+  private boolean checkDirection(Seed theSeed, int row, int col, int rowDir, int colDir) {
     int count = 0;
-    for (int col = 0; col < Board.COLS; ++col) {
-      if (board.cells[rowSelected][col].content == theSeed) {
-        ++count;
-        if (count == 4)
+    for (int i = -3; i <= 3; i++) {
+      int newRow = row + i * rowDir;
+      int newCol = col + i * colDir;
+      if (newRow >= 0 && newRow < Board.ROWS && newCol >= 0 && newCol < Board.COLS
+          && board.cells[newRow][newCol].content == theSeed) {
+        count++;
+        if (count == 4) {
           return true;
-      } else {
-        count = 0;
-      }
-    }
-    for (int row = 0; row < Board.ROWS; ++row) {
-      if (board.cells[row][colSelected].content == theSeed) {
-        ++count;
-        if (count == 4)
-          return true;
-      } else {
-        count = 0;
-      }
-    }
-    for (int row = 0; row < Board.ROWS; ++row) {
-      int col = rowSelected + colSelected - row;
-      if (col >= 0 && col < Board.COLS && board.cells[row][col].content == theSeed) {
-        ++count;
-        if (count == 4)
-          return true;
-      } else {
-        count = 0;
-      }
-    }
-    for (int row = 0; row < Board.ROWS; ++row) {
-      int col = rowSelected - colSelected + row;
-      if (col >= 0 && col < Board.COLS && board.cells[row][col].content == theSeed) {
-        ++count;
-        if (count == 4)
-          return true;
+        }
       } else {
         count = 0;
       }
@@ -172,16 +151,16 @@ public class ConnectFour extends JPanel {
 
   private void showEndGameDialog(State state) {
     String message = "";
-    if (state == State.CROSS_WON) {
+    if (state == State.SNOWY_WON) {
       message = "Snowy Won! Play again?";
-      if (userPlayer == Seed.CROSS) {
+      if (userPlayer == Seed.SNOWY) {
         SoundEffect.WIN.play();
       } else {
         SoundEffect.LOSE.play();
       }
-    } else if (state == State.NOUGHT_WON) {
+    } else if (state == State.STORMY_WON) {
       message = "Stormy Won! Play again?";
-      if (userPlayer == Seed.NOUGHT) {
+      if (userPlayer == Seed.STORMY) {
         SoundEffect.WIN.play();
       } else {
         SoundEffect.LOSE.play();
@@ -205,16 +184,16 @@ public class ConnectFour extends JPanel {
 
   private void showPlayerSelectionDialog() {
     String message = "Choose your player:";
-    ImageIcon crossIcon = new ImageIcon(
+    ImageIcon SNOWYIcon = new ImageIcon(
         new ImageIcon(getClass().getClassLoader().getResource("TicTacToeAI/images/cat1.gif")).getImage()
             .getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-    ImageIcon noughtIcon = new ImageIcon(
+    ImageIcon STORMYIcon = new ImageIcon(
         new ImageIcon(getClass().getClassLoader().getResource("TicTacToeAI/images/cat2.gif")).getImage()
             .getScaledInstance(50, 50, Image.SCALE_SMOOTH));
 
     Object[] options = {
-        "Cross (Snowy)", crossIcon,
-        "Nought (Stormy Cat)", noughtIcon
+        "SNOWY (Snowy)", SNOWYIcon,
+        "STORMY (Stormy Cat)", STORMYIcon
     };
 
     int response = JOptionPane.showOptionDialog(this, message, "Player Selection",
@@ -222,9 +201,9 @@ public class ConnectFour extends JPanel {
         options, options[0]);
 
     if (response == 0) {
-      userPlayer = Seed.CROSS;
+      userPlayer = Seed.SNOWY;
     } else if (response == 2) {
-      userPlayer = Seed.NOUGHT;
+      userPlayer = Seed.STORMY;
     }
   }
 
