@@ -5,6 +5,5 @@ public class Main {
     System.out.println("Connect Four");
     ConnectFour game = new ConnectFour();
     game.play();
-
   }
 }
